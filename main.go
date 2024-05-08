@@ -1,17 +1,31 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
-	"net/http"
+
+	"github.com/Yorik8877/gostman/scripts"
 )
 
-func Handler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, world!\n"))
-}
-
-// main
 func main() {
-	http.HandleFunc("/", Handler)
-	log.Println("Starting server...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	values := map[string]string{"foo1": "baz1"}
+	jsonData, err := json.Marshal(values)
+	if err != nil {
+		panic(err)
+	}
+
+	var rp scripts.RequestParts = scripts.RequestParts{
+		Type: "POST",
+		URL:  "https://httpbin.org/post",
+		Body: bytes.NewBuffer(jsonData),
+	}
+	// Полноценный реквест`
+	req := rp.CreateRequest()
+
+	// Отправка запроса и получение ответа
+	resp := scripts.SendRequest(req)
+
+	// Чтение ответа
+	log.Println(scripts.ReadResponse(resp))
 }
