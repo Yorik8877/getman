@@ -1,27 +1,22 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 )
 
-type User struct {
-	Name string
-	Age  uint8
-}
-
-func home_page(w http.ResponseWriter, r *http.Request) {
-	// fmt.Fprintf(w, "Go is super easy")
-	bob := User{"Bob", 25}
-	tmpl, _ := template.ParseFiles("views/home_page.html")
-	tmpl.Execute(w, bob)
-}
-
-func handeRequest() {
-	http.HandleFunc("/", home_page)
-	http.ListenAndServe(":8080", nil)
+// Вызов index.html
+func indexPage(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("views/index.html")
+	if err != nil {
+		fmt.Fprint(w, err.Error())
+	}
+	tmpl.ExecuteTemplate(w, "index", nil)
 }
 
 func main() {
-	handeRequest()
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
+	http.HandleFunc("/", indexPage)
+	http.ListenAndServe(":8080", nil)
 }
