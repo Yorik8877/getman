@@ -1,31 +1,30 @@
 package main
 
 import (
-	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 )
 
-// Loading index.html page
-func indexPage(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("views/index.html")
-	if err != nil {
-		fmt.Fprint(w, err.Error())
-	}
-	tmpl.ExecuteTemplate(w, "index", nil)
-}
+// type User struct {
+// 	ID    int    `json:"id"`
+// 	Name  string `json:"name"`
+// 	Email string `json:"email"`
+// }
 
-func handlers() {
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
-	http.HandleFunc("/", indexPage)
-}
+// func getUsers(w http.ResponseWriter, r *http.Request) {
+// 	users := []User{
+// 		{ID: 1, Name: "Alice", Email: "alice@example.com"},
+// 		{ID: 2, Name: "Bob", Email: "bob@example.com"},
+// 	}
+
+// 	json.NewEncoder(w).Encode(users)
+// }
 
 func main() {
-	fmt.Println("Starting server...")
-	handlers()
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Print(err.Error())
-	}
+	log.Println("Starting server...")
+
+	fs := http.FileServer(http.Dir("client/build"))
+	http.Handle("/", fs)
+
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }
