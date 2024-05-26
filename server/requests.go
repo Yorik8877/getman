@@ -4,50 +4,53 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
 
 // Структура, ответственная за части запроса
 type RequestParts struct {
-	// Тип запроса
-	// (GET, POST, PUT, PATCH, DELETE)
-	Type   string
-	URL    string
-	Header io.Reader
-	Body   io.Reader
+	Method  string              `json:"method"`
+	ApiUrl  string              `json:"apiUrl"`
+	Body    string              `json:"body"`
+	Headers map[string][]string `json:"headers"`
+	Params  map[string]string   `json:"params"`
 }
 
 // Сборка частей запроса в полноценный запрос
 func (r *RequestParts) CreateRequest() *http.Request {
-	var req *http.Request
-	var err error
-	req, err = http.NewRequest(r.Type, r.URL, r.Body)
+	method := strings.ToUpper(r.Method)
+	customUrl := r.ApiUrl
+
+	if len(r.Params) > 0 {
+		customUrl += "?"
+		for key, value := range r.Params {
+			customUrl += key + "=" + value + "&"
+		}
+	}
+	req, err := http.NewRequest(method, customUrl, strings.NewReader(r.Body))
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return req
 }
 
 // Отправка запроса
-func SendRequest(req *http.Request) *http.Response {
-	var resp *http.Response
-	var err error
-
-	resp, err = http.DefaultClient.Do(req)
+func SendRequest(r *RequestParts) *http.Response {
+	req := r.CreateRequest()
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return resp
 }
 
 // Чтение ответа
-func ReadResponse(resp *http.Response) string {
-	defer resp.Body.Close()
-	var body []byte
-	var err error
+func ReadResponseBody(r *http.Response) string {
+	defer r.Body.Close()
 
-	body, err = io.ReadAll(resp.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 	return string(body)
 }
