@@ -1,2 +1,2 @@
-# Gostman
-Gostman is a Postman analog written in Golang.
+# Getman
+Getman is a Postman analog written with Golang and React JS.
