@@ -12,7 +12,6 @@ import Form from "./Form";
 import SelectTab from './SelectTab';
 import SnackBar from './SnackBar';
 import Response from './Response';
-import ErrorScreen from './ErrorScreen';
 
 const useStyles = makeStyles({
     component: {
@@ -28,6 +27,7 @@ const Home = () => {
     const [errorMsg, setErrorMsg] = useState('')
     const [errorResponse, setErrorResponse] = useState(false);
     const [apiResponse, setApiResponse] = useState({})
+    const [requestType, setRequestType] = useState('POST');
 
     const { formData, jsonText, paramData, headerData } = useContext(DataContext);
     
@@ -50,9 +50,9 @@ const Home = () => {
     return (
         <>
             <Box className={classes.component}>
-                <Form onSendClick={onSendClick} />
-                <SelectTab />
-                { errorResponse ? <ErrorScreen /> : <Response data={apiResponse} /> }
+                <Form requestType={requestType} setRequestType={setRequestType} onSendClick={onSendClick} />
+                <SelectTab requestType={requestType}/>
+                <Response data={apiResponse} />
             </Box>
             { error && <SnackBar errorMsg={errorMsg} error={error} setError={setError} /> }
         </>

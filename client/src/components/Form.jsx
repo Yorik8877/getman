@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { Select, MenuItem, TextField, Box, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { DataContext } from '../context/DataProvider';
+import SelectTab from './SelectTab';
 
 const useStyles = makeStyles({
     component: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles({
     }
 })
 
-const Form = ({ onSendClick }) => {
+const Form = ({ requestType, setRequestType, onSendClick }) => {
     const classes = useStyles();
 
     const { formData, setFormData } = useContext(DataContext) ?? {};
@@ -36,6 +37,7 @@ const Form = ({ onSendClick }) => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, type: e.target.value });
+        setRequestType(e.target.value);
     }
 
     return (
@@ -43,7 +45,7 @@ const Form = ({ onSendClick }) => {
             <Select 
                 className={classes.select} 
                 value={formData.type} 
-                label="POST" 
+                label="GET" 
                 onChange={(e) => handleChange(e)}
             >
                 <MenuItem value={'POST'}>POST</MenuItem>

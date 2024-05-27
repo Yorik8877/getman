@@ -17,48 +17,37 @@ const useStyles = makeStyles({
     }
 });
 
-const AddRow = ({ addRows, rowId, data, setData }) => {
+const ChangeRow = ({ rowId, data, setData}) => {
     const classes = useStyles();
-
     const [checkCheckbox, setCheckCheckbox] = useState(false);
-    
+
     const handleChange = (e) => {
-        
-        let result = data.filter(entry => entry.id === Number(e.target.name))[0];
-        
-        if (!checkCheckbox) {
-            setCheckCheckbox(true);
-            addRows(oldArr => [...oldArr, rowId]);
-            result = { ...result, id: rowId, check: true }
-        } else {
-            setCheckCheckbox(false);
-            result = { ...result, id: rowId, check: false }
-        }
-        
-        let index = data.findIndex((value) => value.id === Number(e.target.name));
+        setCheckCheckbox(e.target.checked);
+        let result = data.filter(entry => entry.id === rowId)[0];
+        result = { ...result, id: rowId, check: e.target.checked }
+
+        let index = data.findIndex((value) => value.id === rowId);
         if (index === -1) {
             setData(oldArr => [...oldArr, result]);
         } else {
-            const newArray = Object.assign([...data], {
-                [index]: result
-            });
-            setData(newArray)    
+            const newArray = [...data];
+            newArray[index] = result;
+            setData(newArray);
         }
     }
-    
+
     const onTextChange = (e) => {
         let result = data.filter(entry => entry.id === rowId)[0];
         result = { ...result, id: rowId, [e.target.name]: e.target.value }
 
         let index = data.findIndex((value) => value.id === rowId);
-        
+
         if (index === -1) {
             setData(oldArr => [...oldArr, result]);
         } else {
-            const newArray = Object.assign([...data], {
-                [index]: result
-            });
-            setData(newArray)    
+            const newArray = [...data];
+            newArray[index] = result;
+            setData(newArray);
         }
     }
     
@@ -89,4 +78,4 @@ const AddRow = ({ addRows, rowId, data, setData }) => {
     )
 }
 
-export default AddRow;
+export default ChangeRow;

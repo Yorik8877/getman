@@ -3,7 +3,6 @@ import { useState, useContext } from 'react';
 import { Box, Tabs, Tab } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-//components
 import CreateTable from './CreateTable';
 import CreateJsonText from './CreateJsonText';
 import { DataContext } from '../context/DataProvider';
@@ -20,7 +19,7 @@ const useStyles = makeStyles({
     }
 })
 
-const SelectTab = () => {
+const SelectTab = ({ requestType }) => {
     const classes = useStyles();
     const [value, setValue] = useState(0);
 
@@ -36,7 +35,7 @@ const SelectTab = () => {
                 TabIndicatorProps={{ sx: { backgroundColor: "#F26B3A", height: 4, bottom: 2} }}>
                 <Tab label="Params" className={classes.tab} />
                 <Tab label="Headers" className={classes.tab} />
-                <Tab label="Body" className={classes.tab} />
+                <Tab label="Body" className={classes.tab} disabled={requestType === 'GET'} />
             </Tabs>
             <Box
                 role="tabpanel"

@@ -1,6 +1,6 @@
 
-
 import { Typography, Box, TextareaAutosize } from "@mui/material"
+import axios from "axios";
 
 const textareaStyle = { 
     width: '100%', 
@@ -14,30 +14,54 @@ const textareaStyle = {
 }
 
 const Response = ({ data }) => {
-    let obj = data;
-    
-    let readableobj = '{ \n';
-    for(let key in obj) {
-        readableobj += '\t'
-        readableobj += (typeof obj[key] === "string")? `${key}: "${obj[key]}"` : `${key}: ${obj[key]}`; 
-        if (Object.keys(obj).pop() !== key.toString()) {
-            readableobj += ',\n'
-        }
+    if (!data || !data.body) {
+        return ( 
+            <Box>
+            <Typography mt={2} mb={2}>Response</Typography>
+            <TextareaAutosize 
+                minRows={3}
+                maxRows={20}
+                style={textareaStyle}
+                disabled="disabled"
+                value='No answer'
+            />
+            </Box>
+        );
     }
-    readableobj += '\n}';
+
+    let body;
+    try {
+        body = JSON.parse(data.body);
+    } catch (error) {
+        console.error('Error while trying to parse JSON:', error);
+        return (
+            <Box>
+            <Typography mt={2} mb={2}>Response</Typography>
+            <TextareaAutosize 
+                minRows={3}
+                maxRows={20}
+                style={textareaStyle}
+                disabled="disabled"
+                value='Произошла ошибка при обработке данных'
+            />
+            </Box>
+        );
+    }
+
+    let readableBody = JSON.stringify(body, null, 4); // преобразуем объект в читаемый формат
 
     return (
         <Box>
             <Typography mt={2} mb={2}>Response</Typography>
             <TextareaAutosize 
                 minRows={3}
-                maxRows={5}
+                maxRows={20}
                 style={textareaStyle}
                 disabled="disabled"
-                value={readableobj}
+                value={readableBody}
             />
         </Box>
-    )
+    );
 }
 
 export default Response;

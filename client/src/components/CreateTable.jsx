@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { Box, Typography, Table, TableHead, TableBody, TableCell, TableRow } from '@mui/material';
+import { Box, Typography, Table, TableHead, TableBody, TableCell, TableRow, Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-import AddRow from './AddRow';
+import ChangeRow from './ChangeRow';
 
 const useStyles = makeStyles({
     textfield: {
@@ -16,13 +16,20 @@ const useStyles = makeStyles({
     },
     checkbox: {
         padding: ['2px 5px', '!important'],
+    },
+    button: {
+        margin: ['10px 0px', '!important']
     }
 });
 
 const CreateTable = ({ text, data, setData }) => {
     const classes = useStyles();
-    const [rows, addRows] = useState([0]);
+    const [rows, changeRows] = useState([0]);
     
+    const handleAddRow = () => {
+        changeRows(prevRows => [...prevRows, prevRows.length]);
+    }
+
     return (
         <Box>
             <Typography mt={2} mb={2}>{text}</Typography>
@@ -37,8 +44,8 @@ const CreateTable = ({ text, data, setData }) => {
                 <TableBody>
                     {
                         rows.map((row, index) => {
-                            return <AddRow 
-                                addRows={addRows} 
+                            return <ChangeRow 
+                                changeRows={changeRows}
                                 rowId={index} 
                                 key={index}
                                 setData={setData}
@@ -48,6 +55,7 @@ const CreateTable = ({ text, data, setData }) => {
                     }
                 </TableBody>
             </Table>
+            <Button className={classes.button} variant="contained" onClick={handleAddRow}>Add Row</Button>
         </Box>
     )
 }

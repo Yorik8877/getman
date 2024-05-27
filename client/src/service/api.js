@@ -6,7 +6,7 @@ export const getData = async (formData, jsonText, paramData, headerData) => {
     const apiType = formData.type.toLowerCase();            // Тип запроса
     const apiUrl = formData.url;                            // URL тестируемого ресурса
     const apiHeaders = getHeadersAndParams(headerData);     // Заголовки для тестируемого ресурса
-    const apiParams = getHeadersAndParams(paramData);       // Параметры (?) для тестируемого ресурса
+    const apiParams = getHeadersAndParams(paramData);       // Параметры запроса для тестируемого ресурса
     const sendUrl = 'http://localhost:8000/data';           // Внешний сервер
 
     try {
